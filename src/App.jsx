@@ -184,10 +184,10 @@ function App() {
   const shipping = subtotal > 0 ? 12 : 0;
   const tax = subtotal * 0.08;
   const promoNormalized = promoCode.trim().toUpperCase();
-  const discountRate = promoNormalized === "KICKOFF10" ? 0.1 : 0;
+  const discountRate = promoNormalized === "FLAT50" ? 0.5 : 0;
   const discount = subtotal * discountRate;
   const total = Math.max(subtotal + shipping + tax - discount, 0);
-  const isPromoValid = promoNormalized === "KICKOFF10";
+  const isPromoValid = promoNormalized === "FLAT50";
   const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY || "";
   const hasRazorpayKey = Boolean(razorpayKey);
   const formattedTotal = formatCurrency(total);
