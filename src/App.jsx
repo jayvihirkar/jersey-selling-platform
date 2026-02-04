@@ -81,8 +81,7 @@ const perkHighlights = [
 
 const paymentOptions = [
   { id: "card", label: "Card" },
-  { id: "upi", label: "UPI" },
-  { id: "razorpay", label: "Razorpay" },
+  { id: "razorpay", label: "UPI(Razorpay)" },
   { id: "cod", label: "Cash on delivery" },
 ];
 
@@ -102,9 +101,6 @@ function App() {
   const [catalog, setCatalog] = useState(initialProducts);
   const [cart, setCart] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("card");
-  const [upiMode, setUpiMode] = useState("qr");
-  const [upiId, setUpiId] = useState("");
-  const [upiNotice, setUpiNotice] = useState({ type: "", message: "" });
   const [customer, setCustomer] = useState({
     name: "",
     email: "",
@@ -203,12 +199,7 @@ function App() {
       if (!hasRazorpayKey) {
         return "Add Razorpay key to continue";
       }
-      return `Continue to Razorpay (${formattedTotal})`;
-    }
-    if (paymentMethod === "upi") {
-      return upiMode === "id"
-        ? `Confirm payment (${formattedTotal})`
-        : `I've paid ${formattedTotal}`;
+      return `Continue to UPI(Razorpay) (${formattedTotal})`;
     }
     if (paymentMethod === "cod") {
       return "Place order";
@@ -217,9 +208,6 @@ function App() {
   })();
   const isPaymentActionDisabled =
     cartItems.length === 0 ||
-    (paymentMethod === "upi" &&
-      upiMode === "id" &&
-      (!upiId.trim() || upiNotice.type !== "success")) ||
     (paymentMethod === "razorpay" && (!hasRazorpayKey || razorpayLoading));
   const featuredProduct = catalog[0];
   const isAdminRoute = route === "/admin" || route === "/admin/";
@@ -257,37 +245,10 @@ function App() {
   const handlePaymentMethodChange = (event) => {
     const next = event.target.value;
     setPaymentMethod(next);
-    if (next !== "upi") {
-      setUpiNotice({ type: "", message: "" });
-    }
     if (next !== "razorpay") {
       setRazorpayNotice({ type: "", message: "" });
       setRazorpayLoading(false);
     }
-  };
-
-  const handleUpiModeChange = (mode) => {
-    setUpiMode(mode);
-    setUpiNotice({ type: "", message: "" });
-  };
-
-  const handleUpiIdChange = (event) => {
-    setUpiId(event.target.value);
-    if (upiNotice.message) {
-      setUpiNotice({ type: "", message: "" });
-    }
-  };
-
-  const handleSendUpiRequest = () => {
-    const trimmed = upiId.trim();
-    if (!trimmed) {
-      setUpiNotice({ type: "error", message: "Enter a valid UPI ID." });
-      return;
-    }
-    setUpiNotice({
-      type: "success",
-      message: `Payment request sent to ${trimmed}.`,
-    });
   };
 
   const handleCustomerChange = (field) => (event) => {
@@ -1266,79 +1227,6 @@ function App() {
                   </>
                 ) : null}
               </div>
-
-              {paymentMethod === "upi" ? (
-                <div className="payment-method-panel upi-panel">
-                  <div className="upi-toggle">
-                    <label
-                      className={`upi-option ${upiMode === "qr" ? "active" : ""}`}
-                    >
-                      <input
-                        type="radio"
-                        name="upiMode"
-                        value="qr"
-                        checked={upiMode === "qr"}
-                        onChange={() => handleUpiModeChange("qr")}
-                      />
-                      <span>Scan QR</span>
-                    </label>
-                    <label
-                      className={`upi-option ${upiMode === "id" ? "active" : ""}`}
-                    >
-                      <input
-                        type="radio"
-                        name="upiMode"
-                        value="id"
-                        checked={upiMode === "id"}
-                        onChange={() => handleUpiModeChange("id")}
-                      />
-                      <span>UPI ID</span>
-                    </label>
-                  </div>
-
-                  {upiMode === "qr" ? (
-                    <div className="upi-qr">
-                      <div className="qr-box">
-                        <span>TFHD UPI</span>
-                      </div>
-                      <div>
-                        <p className="muted">
-                          Scan the QR with any UPI app to pay {formattedTotal}.
-                        </p>
-                        <p className="helper-text">UPI handle: tfhd@razorpay</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="upi-id">
-                      <label>UPI ID</label>
-                      <div className="input-inline">
-                        <input
-                          type="text"
-                          placeholder="name@bank"
-                          value={upiId}
-                          onChange={handleUpiIdChange}
-                        />
-                        <button
-                          type="button"
-                          className="btn secondary small"
-                          onClick={handleSendUpiRequest}
-                        >
-                          Send request
-                        </button>
-                      </div>
-                      {upiNotice.message ? (
-                        <p className={`form-message ${upiNotice.type}`}>
-                          {upiNotice.message}
-                        </p>
-                      ) : (
-                        <p className="helper-text">
-                          We'll send a collect request to your UPI app.
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ) : null}
 
               {paymentMethod === "razorpay" ? (
                 <div className="payment-method-panel razorpay-panel">
