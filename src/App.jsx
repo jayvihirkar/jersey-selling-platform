@@ -722,7 +722,7 @@ function App() {
                   <label>Email</label>
                   <input
                     type="email"
-                    placeholder="jayvihirkar7@gmail.com"
+                    placeholder="abc@gmail.com"
                     value={adminEmail}
                     onChange={(event) => setAdminEmail(event.target.value)}
                   />
@@ -731,7 +731,7 @@ function App() {
                   <label>Password</label>
                   <input
                     type="password"
-                    placeholder="Admin@123"
+                    placeholder="password"
                     value={adminPassword}
                     onChange={(event) => setAdminPassword(event.target.value)}
                   />
@@ -782,23 +782,8 @@ function App() {
                     />
                   </div>
                   <div>
-                    <label>Rating</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      placeholder="4.8"
-                      value={newProduct.rating}
-                      onChange={handleNewProductChange("rating")}
-                    />
-                  </div>
-                  <div>
-                    <label>Tag</label>
-                    <input
-                      type="text"
-                      placeholder="Limited"
-                      value={newProduct.tag}
-                      onChange={handleNewProductChange("tag")}
-                    />
+                    <label>Size</label>
+                   <div> <button>XS</button> <button>S</button> <button>M</button> <button>L</button> <button>XL</button> </div>
                   </div>
                   <div>
                     <label>Fit</label>
